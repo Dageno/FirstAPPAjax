@@ -8,18 +8,17 @@ String.prototype.transformaCaracteresEspeciales = function() {
   var estadosPosibles = ['No inicializado', 'Cargando', 'Cargado', 'Interactivo', 'Completado'];
   var tiempoInicial = 0;
   
-  window.onload = function() {
+ $(document).ready(function() {
     // Cargar en el input text la URL del recurso actual
-    document.getElementById('recurso').value = location.href;
-    
+    $('#recurso').val(window.location.href);
     // Cargar el recurso
-    document.getElementById('enviar').onclick = cargaContenido;
-  }
+    $('#enviar').on("click", cargaContenido);
+});
   
   function cargaContenido() {
     
-    document.getElementById('contenidos').innerHTML = "";
-    document.getElementById('estados').innerHTML = "";
+    $('#contenidos').html("");
+    $('#estados').html("");
     
     // Instancia XMLHttpRequest
     if(window.XMLHttpRequest) {
@@ -33,7 +32,7 @@ String.prototype.transformaCaracteresEspeciales = function() {
     
     //petición
     tiempoInicial = new Date();
-    var recurso = document.getElementById('recurso').value;
+    var recurso = $('#recurso').val();
     peticion.open('GET', recurso+'?nocache='+Math.random(), true);
     peticion.send(null);
   }
@@ -42,13 +41,12 @@ String.prototype.transformaCaracteresEspeciales = function() {
     var tiempoFinal = new Date();
     var milisegundos = tiempoFinal - tiempoInicial;
     
-    var estados = document.getElementById('estados');
-    estados.innerHTML += "[" + milisegundos + " mseg.] " + estadosPosibles[peticion.readyState] + "<br/>";
+    $('#estados').append("["+milisegundos+" mseg.] "+estadosPosibles[peticion.readyState]+"<br/>");
+
     
     if(peticion.readyState == 4) {
       if(peticion.status == 200) {
-        var contenidos = document.getElementById('contenidos');
-        contenidos.innerHTML = peticion.responseText.transformaCaracteresEspeciales();
+        $('#contenidos').html(peticion.responseText.transformaCaracteresEspeciales());
       }
       muestraCodigoEstado();
     }
@@ -56,6 +54,6 @@ String.prototype.transformaCaracteresEspeciales = function() {
 
   //Muestra el codigo de estado y el texto del mismo
   function muestraCodigoEstado() {
-    var codigo = document.getElementById('codigo');
-    codigo.innerHTML = peticion.status + "<br/>" + peticion.statusText;        
+    $('#codigo').html(peticion.status+"<br/>"+peticion.statusText);
+           
   }
